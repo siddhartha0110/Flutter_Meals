@@ -31,54 +31,61 @@ class MealDetails extends StatelessWidget {
     final mealId = ModalRoute.of(context).settings.arguments as String;
     final displayMeal = DUMMY_MEALS.firstWhere((meal) => meal.id == mealId);
     return Scaffold(
-        appBar: AppBar(title: Text(displayMeal.title)),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Container(
-                height: 300,
-                width: double.infinity,
-                child: Image.network(
-                  displayMeal.imageUrl,
-                  fit: BoxFit.cover,
-                ),
+      appBar: AppBar(title: Text(displayMeal.title)),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 300,
+              width: double.infinity,
+              child: Image.network(
+                displayMeal.imageUrl,
+                fit: BoxFit.cover,
               ),
-              buildSectionTitle(context, 'Ingredients'),
-              buildSectionContainer(
-                ListView.builder(
-                  itemBuilder: (ctx, index) => Card(
-                    color: Theme.of(context).accentColor,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
-                      child: Text(
-                        displayMeal.ingredients[index],
-                      ),
+            ),
+            buildSectionTitle(context, 'Ingredients'),
+            buildSectionContainer(
+              ListView.builder(
+                itemBuilder: (ctx, index) => Card(
+                  color: Theme.of(context).accentColor,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    child: Text(
+                      displayMeal.ingredients[index],
                     ),
                   ),
-                  itemCount: displayMeal.ingredients.length,
                 ),
+                itemCount: displayMeal.ingredients.length,
               ),
-              buildSectionTitle(context, 'Steps'),
-              buildSectionContainer(ListView.builder(
-                itemBuilder: (ctx, index) => Column(
-                  children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: Theme.of(context).accentColor,
-                        child: Text('# ${(index + 1)}'),
-                      ),
-                      title: Text(displayMeal.steps[index]),
+            ),
+            buildSectionTitle(context, 'Steps'),
+            buildSectionContainer(ListView.builder(
+              itemBuilder: (ctx, index) => Column(
+                children: [
+                  ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).accentColor,
+                      child: Text('# ${(index + 1)}'),
                     ),
-                    Divider(
-                      color: Colors.green,
-                    )
-                  ],
-                ),
-                itemCount: displayMeal.steps.length,
-              )),
-            ],
-          ),
-        ));
+                    title: Text(displayMeal.steps[index]),
+                  ),
+                  Divider(
+                    color: Colors.green,
+                  )
+                ],
+              ),
+              itemCount: displayMeal.steps.length,
+            )),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pop(mealId);
+        },
+        child: Icon(Icons.delete),
+      ),
+    );
   }
 }
