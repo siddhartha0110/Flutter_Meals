@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:meals/dummy_data.dart';
-import 'package:meals/models/meal.dart';
-
+import './dummy_data.dart';
+import './models/meal.dart';
 import './screens/filters_screen.dart';
 import './screens/meal_details_screen.dart';
 import './screens/tabs_screen.dart';
@@ -17,6 +16,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  List<Meal> _favMeals = [];
+
   Map<String, bool> _filters = {
     'gluten': false,
     'lactose': false,
@@ -24,7 +25,6 @@ class _MyAppState extends State<MyApp> {
     'vegetarian': false,
   };
   List<Meal> _availableMeals = DUMMY_MEALS;
-
   void _setFilters(Map<String, bool> data) {
     setState(() {
       _filters = data;
@@ -47,6 +47,23 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  void _toggleFavorite(String mealID) {
+    final existingIndex = _favMeals.indexWhere((meal) => meal.id == mealID);
+    if (existingIndex >= 0) {
+      setState(() {
+        _favMeals.removeAt(existingIndex);
+      });
+    } else {
+      setState(() {
+        _favMeals.add(DUMMY_MEALS.firstWhere((meal) => meal.id == mealID));
+      });
+    }
+  }
+
+  bool _isMealFav(String id) {
+    return _favMeals.any((meal) => meal.id == id);
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -66,9 +83,9 @@ class _MyAppState extends State<MyApp> {
               ))),
       //home: TabsScreen(),
       routes: {
-        '/': (ctx) => TabsScreen(),
+        '/': (ctx) => TabsScreen(_favMeals),
         '/category-meals': (ctx) => CategoryMealsScreen(_availableMeals),
-        '/meal-detail': (ctx) => MealDetails(),
+        '/meal-detail': (ctx) => MealDetails(_toggleFavorite, _isMealFav),
         '/filters': (ctx) => FiltersScreen(_setFilters, _filters)
       },
       onUnknownRoute: (settings) {
